@@ -10,7 +10,7 @@ It brings together clients, quotes, construction sites, tasks, expenses, payment
 
 ## 📸 Application Preview
 
-![SiteFlow Dashboard](./Capture%20d%E2%80%99cran%202026-09-14%20%C3%A0%2023.55.41.png)
+![SiteFlow Dashboard](siteflow-dashboard.png)
 
 ## ✨ Main Features
 
