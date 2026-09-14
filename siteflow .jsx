@@ -293,18 +293,49 @@ export default function App() {
           color: var(--muted); font-weight: 600; padding: 10px 14px; border-bottom: 1px solid var(--border-c); }
         table.sf-table td { padding: 12px 14px; font-size: 13.5px; border-bottom: 1px solid #EEF0EF; vertical-align: middle; }
         table.sf-table tr:last-child td { border-bottom: none; }
+        .sf-table-wrap { overflow-x: auto; }
+
+        /* ---------- phone layout ---------- */
+        .sf-shell { display: flex; min-height: 640px; border-radius: 14px; overflow: hidden; border: 1px solid var(--border-c); }
+        .sf-sidebar { width: 220px; background: var(--ink); color: #EDEFEE; display: flex; flex-direction: column; flex-shrink: 0; }
+        .sf-sidebar-brand { padding: 20px 18px 16px; display: flex; align-items: center; gap: 9px; }
+        .sf-nav { padding: 6px 10px; display: flex; flex-direction: column; gap: 2px; }
+        .sf-nav-btn { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 7px; border: none; cursor: pointer; font-size: 13.5px; font-weight: 500; text-align: left; background: transparent; color: #B8C0C6; }
+        .sf-nav-btn.active { background: rgba(255,255,255,0.1); color: #fff; }
+        .sf-sidebar-footer { margin-top: auto; padding: 16px; border-top: 1px solid rgba(255,255,255,0.08); }
+        .sf-main { flex: 1; background: var(--paper); display: flex; flex-direction: column; min-width: 0; }
+        .sf-topbar { padding: 16px 24px; border-bottom: 1px solid var(--border-c); background: #fff; display: flex; align-items: center; gap: 16px; }
+        .sf-content { flex: 1; overflow-y: auto; padding: 24px; }
+
+        @media (max-width: 760px) {
+          .sf-shell { flex-direction: column; min-height: unset; border-radius: 10px; }
+          .sf-sidebar { width: 100%; flex-direction: row; align-items: center; order: 2;
+            position: sticky; bottom: 0; z-index: 20; padding: 4px 6px; border-top: 1px solid rgba(255,255,255,0.1); }
+          .sf-sidebar-brand, .sf-sidebar-footer { display: none; }
+          .sf-nav { flex-direction: row; width: 100%; padding: 2px; gap: 0; justify-content: space-around; }
+          .sf-nav-btn { flex-direction: column; gap: 3px; font-size: 10.5px; padding: 7px 4px; flex: 1; text-align: center; justify-content: center; }
+          .sf-main { order: 1; }
+          .sf-topbar { padding: 12px 14px; }
+          .sf-content { padding: 14px; }
+          .sf-cols-multi { grid-template-columns: repeat(2, 1fr) !important; }
+          .sf-cols-two, .sf-cols-asym { grid-template-columns: 1fr !important; }
+          table.sf-table { min-width: 560px; }
+        }
+        @media (max-width: 420px) {
+          .sf-cols-multi { grid-template-columns: 1fr !important; }
+        }
       `}</style>
 
-      <div style={{ display: "flex", minHeight: 640, borderRadius: 14, overflow: "hidden", border: "1px solid var(--border-c)" }}>
+      <div className="sf-shell">
         {/* Sidebar */}
-        <div style={{ width: 220, background: "var(--ink)", color: "#EDEFEE", display: "flex", flexDirection: "column", flexShrink: 0 }}>
-          <div style={{ padding: "20px 18px 16px", display: "flex", alignItems: "center", gap: 9 }}>
+        <div className="sf-sidebar">
+          <div className="sf-sidebar-brand">
             <div style={{ width: 26, height: 26, borderRadius: 6, background: "var(--accent)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
               <HardHat size={15} color="#241505" strokeWidth={2.4} />
             </div>
             <div style={{ fontSize: 15, fontWeight: 700, letterSpacing: "-0.01em" }}>SiteFlow</div>
           </div>
-          <nav style={{ padding: "6px 10px", display: "flex", flexDirection: "column", gap: 2 }}>
+          <nav className="sf-nav">
             {NAV.map((n) => {
               const active = view.page === n.key;
               const Icon = n.icon;
@@ -312,12 +343,7 @@ export default function App() {
                 <button
                   key={n.key}
                   onClick={() => goto(n.key)}
-                  style={{
-                    display: "flex", alignItems: "center", gap: 10, padding: "9px 12px", borderRadius: 7,
-                    border: "none", cursor: "pointer", fontSize: 13.5, fontWeight: 500, textAlign: "left",
-                    background: active ? "rgba(255,255,255,0.1)" : "transparent",
-                    color: active ? "#fff" : "#B8C0C6",
-                  }}
+                  className={"sf-nav-btn" + (active ? " active" : "")}
                 >
                   <Icon size={16} strokeWidth={2} />
                   {n.label}
@@ -325,7 +351,7 @@ export default function App() {
               );
             })}
           </nav>
-          <div style={{ marginTop: "auto", padding: 16, borderTop: "1px solid rgba(255,255,255,0.08)" }}>
+          <div className="sf-sidebar-footer">
             <div style={{ fontSize: 12, color: "#8B959C" }}>Signed in as</div>
             <div style={{ fontSize: 13, fontWeight: 600, marginTop: 2 }}>Dana Wu</div>
             <div style={{ fontSize: 11.5, color: "#8B959C" }}>Northgate Builders</div>
@@ -333,8 +359,8 @@ export default function App() {
         </div>
 
         {/* Main */}
-        <div style={{ flex: 1, background: "var(--paper)", display: "flex", flexDirection: "column", minWidth: 0 }}>
-          <div style={{ padding: "16px 24px", borderBottom: "1px solid var(--border-c)", background: "#fff", display: "flex", alignItems: "center", gap: 16 }}>
+        <div className="sf-main">
+          <div className="sf-topbar">
             <div style={{ position: "relative", flex: 1, maxWidth: 360 }}>
               <Search size={15} style={{ position: "absolute", left: 10, top: 10, color: "var(--muted)" }} />
               <input
@@ -345,12 +371,12 @@ export default function App() {
                 onChange={(e) => setQuery(e.target.value)}
               />
             </div>
-            <div style={{ marginLeft: "auto", fontSize: 12.5, color: "var(--muted)" }}>
+            <div style={{ marginLeft: "auto", fontSize: 12.5, color: "var(--muted)", whiteSpace: "nowrap" }}>
               {new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}
             </div>
           </div>
 
-          <div className="sf-scroll" style={{ flex: 1, overflowY: "auto", padding: 24 }}>
+          <div className="sf-scroll sf-content">
             {searchResults ? (
               <SearchResultsView results={searchResults} goto={goto} clearSearch={() => setQuery("")} query={query} />
             ) : view.page === "dashboard" ? (
@@ -486,20 +512,20 @@ function Dashboard({ data, goto }) {
     <div>
       <SectionTitle title="Dashboard" subtitle="Your business at a glance" />
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12, marginBottom: 14 }}>
+      <div className="sf-cols-multi" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12, marginBottom: 14 }}>
         <StatCard label="Revenue (accepted quotes)" value={money(stats.revenue)} icon={TrendingUp} />
         <StatCard label="Quotes pending response" value={stats.pendingQuotes} icon={FileText} />
         <StatCard label="Quotes accepted" value={stats.acceptedQuotes} icon={CheckCircle2} />
         <StatCard label="Active projects" value={stats.activeProjects} icon={HardHat} />
       </div>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12, marginBottom: 24 }}>
+      <div className="sf-cols-multi" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12, marginBottom: 24 }}>
         <StatCard label="Projects completed" value={stats.completedProjects} icon={Check} />
         <StatCard label="Payments outstanding" value={money(stats.pendingPayments)} icon={Wallet} tone="amber" />
         <StatCard label="Recorded expenses" value={money(stats.monthExpenses)} icon={Receipt} />
         <StatCard label="Estimated profit" value={money(stats.estProfit)} icon={TrendingUp} tone={stats.estProfit >= 0 ? "green" : "red"} />
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: 14, marginBottom: 14 }}>
+      <div className="sf-cols-asym" style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: 14, marginBottom: 14 }}>
         <Card style={{ padding: 18 }}>
           <div style={{ fontSize: 13.5, fontWeight: 700, marginBottom: 4 }}>Revenue trend</div>
           <div style={{ fontSize: 12, color: "var(--muted)", marginBottom: 10 }}>Accepted quote value by month</div>
@@ -541,7 +567,7 @@ function Dashboard({ data, goto }) {
 
       <Card style={{ padding: 0 }}>
         <div style={{ padding: "14px 18px", borderBottom: "1px solid var(--border-c)", fontSize: 13.5, fontWeight: 700 }}>Recent projects</div>
-        <table className="sf-table">
+        <div className="sf-table-wrap"><table className="sf-table">
           <thead>
             <tr><th>Project</th><th>Client</th><th>Status</th><th>Progress</th><th>Budget</th></tr>
           </thead>
@@ -556,7 +582,7 @@ function Dashboard({ data, goto }) {
               </tr>
             ))}
           </tbody>
-        </table>
+        </table></div>
       </Card>
     </div>
   );
@@ -621,7 +647,7 @@ function ClientsPage({ data, setData, view, goto }) {
             </div>
           }
         />
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1.4fr", gap: 14 }}>
+        <div className="sf-cols-asym" style={{ display: "grid", gridTemplateColumns: "1fr 1.4fr", gap: 14 }}>
           <Card style={{ padding: 18 }}>
             <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 12 }}>Contact details</div>
             <DetailRow label="Phone" value={selected.phone} />
@@ -668,7 +694,7 @@ function ClientsPage({ data, setData, view, goto }) {
         <input className="sf-input" style={{ paddingLeft: 28 }} placeholder="Search clients…" value={search} onChange={(e) => setSearch(e.target.value)} />
       </div>
       <Card style={{ padding: 0 }}>
-        <table className="sf-table">
+        <div className="sf-table-wrap"><table className="sf-table">
           <thead><tr><th>Name</th><th>Company</th><th>Phone</th><th>Email</th><th>City</th></tr></thead>
           <tbody>
             {filtered.map((c) => (
@@ -682,7 +708,7 @@ function ClientsPage({ data, setData, view, goto }) {
             ))}
             {filtered.length === 0 && <tr><td colSpan={5}><EmptyRow text="No clients match your search." /></td></tr>}
           </tbody>
-        </table>
+        </table></div>
       </Card>
       {editing && (
         <ClientModal
@@ -735,14 +761,14 @@ function ClientModal({ client, onClose, onSave }) {
   const valid = form.name.trim().length > 0;
   return (
     <Modal title={client.name ? "Edit client" : "Add client"} onClose={onClose}>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+      <div className="sf-cols-two" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
         <Field label="Full name"><input className="sf-input" value={form.name} onChange={set("name")} placeholder="Jane Carter" /></Field>
         <Field label="Company (optional)"><input className="sf-input" value={form.company} onChange={set("company")} placeholder="Carter Holdings" /></Field>
         <Field label="Phone"><input className="sf-input" value={form.phone} onChange={set("phone")} placeholder="(555) 555-0100" /></Field>
         <Field label="Email"><input className="sf-input" value={form.email} onChange={set("email")} placeholder="jane@example.com" /></Field>
       </div>
       <Field label="Address"><input className="sf-input" value={form.address} onChange={set("address")} placeholder="123 Main St" /></Field>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+      <div className="sf-cols-two" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
         <Field label="City"><input className="sf-input" value={form.city} onChange={set("city")} /></Field>
         <Field label="ZIP code"><input className="sf-input" value={form.zip} onChange={set("zip")} /></Field>
       </div>
@@ -822,7 +848,7 @@ function QuotesPage({ data, setData, view, goto }) {
             </div>
           }
         />
-        <div style={{ display: "grid", gridTemplateColumns: "1.5fr 1fr", gap: 14 }}>
+        <div className="sf-cols-asym" style={{ display: "grid", gridTemplateColumns: "1.5fr 1fr", gap: 14 }}>
           <Card style={{ padding: 20 }}>
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 16, flexWrap: "wrap", gap: 12 }}>
               <div>
@@ -835,7 +861,7 @@ function QuotesPage({ data, setData, view, goto }) {
               </div>
             </div>
             {selected.description && <p style={{ fontSize: 13, color: "var(--muted)", marginBottom: 16 }}>{selected.description}</p>}
-            <table className="sf-table">
+            <div className="sf-table-wrap"><table className="sf-table">
               <thead><tr><th>Description</th><th>Qty</th><th>Unit price</th><th>Disc.</th><th>VAT</th><th style={{ textAlign: "right" }}>Line total</th></tr></thead>
               <tbody>
                 {selected.items.map((it) => {
@@ -852,7 +878,7 @@ function QuotesPage({ data, setData, view, goto }) {
                   );
                 })}
               </tbody>
-            </table>
+            </table></div>
             <div style={{ marginTop: 16, marginLeft: "auto", maxWidth: 260 }}>
               <TotalRow label="Subtotal" value={moneyPrecise(totals.subtotal)} />
               <TotalRow label="VAT" value={moneyPrecise(totals.vat)} />
@@ -890,7 +916,7 @@ function QuotesPage({ data, setData, view, goto }) {
         ))}
       </div>
       <Card style={{ padding: 0 }}>
-        <table className="sf-table">
+        <div className="sf-table-wrap"><table className="sf-table">
           <thead><tr><th>Number</th><th>Client</th><th>Subject</th><th>Date</th><th>Status</th><th style={{ textAlign: "right" }}>Total</th></tr></thead>
           <tbody>
             {filtered.map((q) => {
@@ -908,7 +934,7 @@ function QuotesPage({ data, setData, view, goto }) {
             })}
             {filtered.length === 0 && <tr><td colSpan={6}><EmptyRow text="No quotes in this status." /></td></tr>}
           </tbody>
-        </table>
+        </table></div>
       </Card>
     </div>
   );
@@ -937,7 +963,7 @@ function QuoteEditor({ quote, clients, onCancel, onSave }) {
     <div>
       <button className="sf-btn" style={{ marginBottom: 14 }} onClick={onCancel}>← Cancel</button>
       <SectionTitle title={quote.number ? `Edit ${quote.number}` : "New quote"} subtitle="Build the quote and see totals update live" />
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 4 }}>
+      <div className="sf-cols-two" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 4 }}>
         <Field label="Client">
           <select className="sf-select" value={form.clientId} onChange={setField("clientId")}>
             <option value="">Select a client</option>
@@ -952,7 +978,7 @@ function QuoteEditor({ quote, clients, onCancel, onSave }) {
 
       <div style={{ fontSize: 13, fontWeight: 700, margin: "18px 0 8px" }}>Line items</div>
       <Card style={{ padding: 0, marginBottom: 12 }}>
-        <table className="sf-table">
+        <div className="sf-table-wrap"><table className="sf-table">
           <thead>
             <tr><th style={{ minWidth: 180 }}>Description</th><th>Qty</th><th>Unit</th><th>Unit price</th><th>Disc %</th><th>VAT %</th><th style={{ textAlign: "right" }}>Total</th><th></th></tr>
           </thead>
@@ -977,7 +1003,7 @@ function QuoteEditor({ quote, clients, onCancel, onSave }) {
               );
             })}
           </tbody>
-        </table>
+        </table></div>
         <div style={{ padding: 12 }}>
           <button className="sf-btn" onClick={addItem}><Plus size={14} />Add line item</button>
         </div>
@@ -985,7 +1011,7 @@ function QuoteEditor({ quote, clients, onCancel, onSave }) {
 
       {!valid && <div style={{ fontSize: 12.5, color: "#A23F32", marginBottom: 10 }}>Select a client, add a subject, and at least one line item.</div>}
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+      <div className="sf-cols-two" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
         <Field label="Deposit percentage">
           <input type="number" className="sf-input" value={form.depositPct} onChange={(e) => setForm((f) => ({ ...f, depositPct: parseFloat(e.target.value) || 0 }))} />
         </Field>
@@ -1025,7 +1051,7 @@ function ProjectsPage({ data, setData, view, goto }) {
           <button key={s} onClick={() => setFilter(s)} className="sf-btn" style={{ background: filter === s ? "var(--ink)" : "#fff", color: filter === s ? "#fff" : "var(--text)", borderColor: filter === s ? "var(--ink)" : "var(--border-c)" }}>{s}</button>
         ))}
       </div>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 12 }}>
+      <div className="sf-cols-multi" style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 12 }}>
         {filtered.map((p) => {
           const f = projectFinancials(p);
           const prog = taskProgress(p);
@@ -1076,7 +1102,7 @@ function ProjectDetail({ project, clientName, updateProject, goto }) {
           </select>
         }
       />
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 10, marginBottom: 18 }}>
+      <div className="sf-cols-multi" style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 10, marginBottom: 18 }}>
         <MiniStat label="Progress" value={`${prog}%`} />
         <MiniStat label="Budget" value={money(f.budget)} />
         <MiniStat label="Expenses" value={money(f.expensesTotal)} />
@@ -1113,10 +1139,10 @@ function MiniStat({ label, value, tone }) {
 
 function ProjectOverview({ project, updateProject, f }) {
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+    <div className="sf-cols-two" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
       <Card style={{ padding: 18 }}>
         <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 12 }}>Schedule</div>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+        <div className="sf-cols-two" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
           <Field label="Start date"><input type="date" className="sf-input" value={project.startDate} onChange={(e) => updateProject({ startDate: e.target.value })} /></Field>
           <Field label="Target end date"><input type="date" className="sf-input" value={project.endDate} onChange={(e) => updateProject({ endDate: e.target.value })} /></Field>
         </div>
@@ -1173,7 +1199,7 @@ function ProjectTasks({ project, updateProject }) {
         <button className="sf-btn sf-btn-primary" onClick={() => setModal("new")}><Plus size={14} />Add task</button>
       </div>
       <Card style={{ padding: 0 }}>
-        <table className="sf-table">
+        <div className="sf-table-wrap"><table className="sf-table">
           <thead><tr><th></th><th>Task</th><th>Assignee</th><th>Due</th><th>Priority</th><th>Progress</th><th></th></tr></thead>
           <tbody>
             {project.tasks.map((t) => (
@@ -1202,7 +1228,7 @@ function ProjectTasks({ project, updateProject }) {
             ))}
             {project.tasks.length === 0 && <tr><td colSpan={7}><EmptyRow text="No tasks yet." /></td></tr>}
           </tbody>
-        </table>
+        </table></div>
       </Card>
       {modal && (
         <TaskModal
@@ -1223,7 +1249,7 @@ function TaskModal({ task, onClose, onSave }) {
       <Field label="Title"><input className="sf-input" value={form.title} onChange={set("title")} placeholder="Install cabinetry" /></Field>
       <Field label="Description"><textarea className="sf-textarea" rows={2} value={form.description} onChange={set("description")} /></Field>
       <Field label="Assignee"><input className="sf-input" value={form.assignee} onChange={set("assignee")} placeholder="Team member or subcontractor" /></Field>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+      <div className="sf-cols-two" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
         <Field label="Start date"><input type="date" className="sf-input" value={form.startDate} onChange={set("startDate")} /></Field>
         <Field label="Due date"><input type="date" className="sf-input" value={form.dueDate} onChange={set("dueDate")} /></Field>
         <Field label="Priority">
@@ -1262,7 +1288,7 @@ function ProjectExpenses({ project, updateProject, f }) {
         <button className="sf-btn sf-btn-primary" onClick={() => setModal("new")}><Plus size={14} />Add expense</button>
       </div>
       <Card style={{ padding: 0 }}>
-        <table className="sf-table">
+        <div className="sf-table-wrap"><table className="sf-table">
           <thead><tr><th>Description</th><th>Category</th><th>Supplier</th><th>Date</th><th style={{ textAlign: "right" }}>Amount (incl. VAT)</th><th></th></tr></thead>
           <tbody>
             {project.expenses.map((e) => (
@@ -1282,7 +1308,7 @@ function ProjectExpenses({ project, updateProject, f }) {
             ))}
             {project.expenses.length === 0 && <tr><td colSpan={6}><EmptyRow text="No expenses recorded." /></td></tr>}
           </tbody>
-        </table>
+        </table></div>
       </Card>
       {modal && (
         <ExpenseModal
@@ -1302,7 +1328,7 @@ function ExpenseModal({ expense, onClose, onSave }) {
   return (
     <Modal title={expense.description ? "Edit expense" : "Add expense"} onClose={onClose}>
       <Field label="Description"><input className="sf-input" value={form.description} onChange={set("description")} placeholder="Cabinet order deposit" /></Field>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+      <div className="sf-cols-two" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
         <Field label="Category"><select className="sf-select" value={form.category} onChange={set("category")}>{EXPENSE_CATEGORIES.map((c) => <option key={c}>{c}</option>)}</select></Field>
         <Field label="Supplier"><input className="sf-input" value={form.supplier} onChange={set("supplier")} /></Field>
         <Field label="Amount before VAT"><input type="number" className="sf-input" value={form.amountHT} onChange={setNum("amountHT")} /></Field>
@@ -1333,7 +1359,7 @@ function ProjectPayments({ project, updateProject, f }) {
 
   return (
     <div>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 10, marginBottom: 14 }}>
+      <div className="sf-cols-multi" style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 10, marginBottom: 14 }}>
         <MiniStat label="Invoiced" value={money(f.invoiced)} />
         <MiniStat label="Collected" value={money(f.collected)} />
         <MiniStat label="Balance due" value={money(f.remaining)} tone={f.remaining > 0 ? "red" : "green"} />
@@ -1346,7 +1372,7 @@ function ProjectPayments({ project, updateProject, f }) {
         <button className="sf-btn sf-btn-primary" onClick={() => setModal("new")}><Plus size={14} />Record payment</button>
       </div>
       <Card style={{ padding: 0 }}>
-        <table className="sf-table">
+        <div className="sf-table-wrap"><table className="sf-table">
           <thead><tr><th>Date</th><th>Method</th><th>Note</th><th style={{ textAlign: "right" }}>Amount</th><th></th></tr></thead>
           <tbody>
             {project.payments.map((p) => (
@@ -1362,7 +1388,7 @@ function ProjectPayments({ project, updateProject, f }) {
             ))}
             {project.payments.length === 0 && <tr><td colSpan={5}><EmptyRow text="No payments recorded." /></td></tr>}
           </tbody>
-        </table>
+        </table></div>
       </Card>
       {modal && (
         <PaymentModal
@@ -1380,7 +1406,7 @@ function PaymentModal({ payment, onClose, onSave }) {
   const valid = form.amount > 0;
   return (
     <Modal title="Record payment" onClose={onClose}>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+      <div className="sf-cols-two" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
         <Field label="Amount"><input type="number" className="sf-input" value={form.amount} onChange={(e) => setForm((f) => ({ ...f, amount: parseFloat(e.target.value) || 0 }))} /></Field>
         <Field label="Date"><input type="date" className="sf-input" value={form.date} onChange={set("date")} /></Field>
       </div>
