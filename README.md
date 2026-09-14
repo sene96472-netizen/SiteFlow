@@ -1,4 +1,5 @@
 # SiteFlow
+
 Construction management SaaS designed to help construction companies manage their projects from quotes to completion.
 
 ## 🚧 Project Overview
@@ -6,6 +7,10 @@ Construction management SaaS designed to help construction companies manage thei
 SiteFlow is a web application focused on simplifying construction project management.
 
 It brings together clients, quotes, construction sites, tasks, expenses, payments, and project progress in one centralized platform.
+
+## 📸 Application Preview
+
+![SiteFlow Dashboard](Capture%20d%E2%80%99cran%202026-09-14%20%C3%A0%2023.55.41.png)
 
 ## ✨ Main Features
 
@@ -35,7 +40,7 @@ The goal of SiteFlow is to create a practical digital workspace for construction
 
 ## 🚀 Live Demo
 
-Coming soon.
+[▶️ Open SiteFlow Live Demo](https://stackblitz.com/github/sene96472-netizen/SiteFlow?file=src%2FApp.jsx)
 
 ## 👨‍💻 Developer
 
