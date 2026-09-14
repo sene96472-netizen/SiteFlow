@@ -1,6 +1,4 @@
 # SiteFlow
-# SiteFlow
-
 Construction management SaaS designed to help construction companies manage their projects from quotes to completion.
 
 ## 🚧 Project Overview
