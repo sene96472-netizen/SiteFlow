@@ -11,7 +11,8 @@
     "lucide-react": "latest",
     "recharts": "latest",
     "react": "latest",
-    "react-dom": "latest"
+    "react-dom": "latest",
+    "@supabase/supabase-js": "latest"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "latest",
