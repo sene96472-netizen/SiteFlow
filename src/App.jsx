@@ -238,11 +238,13 @@ function useStore() {
 
       try {
 
-        const { data: existing } = await supabase
-          .from("siteflow_data")
-          .select("id")
-          .limit(1)
-          .maybeSingle();
+        const { data: existing, error: existingError } = await supabase
+            .from("siteflow_data")
+            .select("id")
+            .limit(1)
+            .maybeSingle();
+
+        if (existingError) throw existingError;
 
         if (existing?.id) {
 
