@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
+import { supabase } from "./supabase";
 import {
   LayoutDashboard, Users, FileText, HardHat, ListChecks, Receipt,
   Wallet, Plus, Search, X, Trash2, Pencil, ArrowRight, Check,
