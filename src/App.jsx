@@ -195,30 +195,84 @@ function seed() {
 const STORAGE_KEY = "siteflow-data-v1";
 
 function useStore() {
+
   const [data, setData] = useState(null);
+
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
+
     (async () => {
+
       try {
-        const res = await window.storage.get(STORAGE_KEY, false);
-        setData(res ? JSON.parse(res.value) : seed());
-      } catch {
+
+        const { data: row, error } = await supabase
+          .from("siteflow_data")
+          .select("data")
+          .limit(1)
+          .maybeSingle();
+
+        if (error) throw error;
+
+        setData(row?.data || seed());
+
+      } catch (error) {
+
+        console.error("Erreur Supabase :", error);
+
         setData(seed());
+
       }
+
       setReady(true);
+
     })();
+
   }, []);
 
   useEffect(() => {
+
     if (!ready || !data) return;
-    const t = setTimeout(() => {
-      window.storage.set(STORAGE_KEY, JSON.stringify(data), false).catch(() => {});
+
+    const t = setTimeout(async () => {
+
+      try {
+
+        const { data: existing } = await supabase
+          .from("siteflow_data")
+          .select("id")
+          .limit(1)
+          .maybeSingle();
+
+        if (existing?.id) {
+
+          await supabase
+            .from("siteflow_data")
+            .update({ data })
+            .eq("id", existing.id);
+
+        } else {
+
+          await supabase
+            .from("siteflow_data")
+            .insert({ data });
+
+        }
+
+      } catch (error) {
+
+        console.error("Erreur de sauvegarde Supabase :", error);
+
+      }
+
     }, 400);
+
     return () => clearTimeout(t);
+
   }, [data, ready]);
 
   return [data, setData, ready];
+
 }
 
 /* ---------------------------------- shell ------------------------------------ */
