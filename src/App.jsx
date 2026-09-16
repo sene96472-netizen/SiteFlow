@@ -248,18 +248,22 @@ function useStore() {
 
         if (existing?.id) {
 
-          await supabase
+           const { error } = await supabase
             .from("siteflow_data")
             .update({ data })
             .eq("id", existing.id);
 
-        } else {
+        if (error) throw error;
 
-          await supabase
+      } else {
+
+          const { error } = await supabase
             .from("siteflow_data")
             .insert({ data });
 
-        }
+       if (error) throw error;
+
+}
 
       } catch (error) {
 
