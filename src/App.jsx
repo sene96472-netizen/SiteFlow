@@ -1,5 +1,4 @@
 import { useState, useEffect, useMemo } from "react";
-import { supabase } from "./supabase";
 import {
   LayoutDashboard, Users, FileText, HardHat, ListChecks, Receipt,
   Wallet, Plus, Search, X, Trash2, Pencil, ArrowRight, Check,
@@ -191,94 +190,43 @@ function seed() {
 }
 
 /* --------------------------------- storage ---------------------------------- */
+/* Stockage persistant natif des artefacts (window.storage) : pas de backend
+   externe requis, les données restent privées à l'utilisateur d'une session
+   à l'autre. Si le stockage n'est pas disponible, l'app retombe simplement
+   sur les données de démonstration sans planter. */
 
 const STORAGE_KEY = "siteflow-data-v1";
 
 function useStore() {
-
   const [data, setData] = useState(null);
-
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-
     (async () => {
-
       try {
-
-        const { data: row, error } = await supabase
-          .from("siteflow_data")
-          .select("data")
-          .limit(1)
-          .maybeSingle();
-
-        if (error) throw error;
-
-        setData(row?.data || seed());
-
+        const result = await window.storage.get(STORAGE_KEY);
+        setData(result?.value ? JSON.parse(result.value) : seed());
       } catch (error) {
-
-        console.error("Erreur Supabase :", error);
-
+        // Clé absente au premier lancement, ou stockage indisponible.
         setData(seed());
-
       }
-
       setReady(true);
-
     })();
-
   }, []);
 
   useEffect(() => {
-
     if (!ready || !data) return;
-
     const t = setTimeout(async () => {
-
       try {
-
-        const { data: existing, error: existingError } = await supabase
-            .from("siteflow_data")
-            .select("id")
-            .limit(1)
-            .maybeSingle();
-
-        if (existingError) throw existingError;
-
-        if (existing?.id) {
-
-           const { error } = await supabase
-            .from("siteflow_data")
-            .update({ data })
-            .eq("id", existing.id);
-
-        if (error) throw error;
-
-      } else {
-
-          const { error } = await supabase
-            .from("siteflow_data")
-            .insert({ data });
-
-       if (error) throw error;
-
-}
-
+        await window.storage.set(STORAGE_KEY, JSON.stringify(data));
       } catch (error) {
-
-        console.error("Erreur de sauvegarde Supabase :", error);
-
+        console.error("Erreur de sauvegarde :", error);
       }
-
     }, 400);
-
     return () => clearTimeout(t);
-
   }, [data, ready]);
 
   return [data, setData, ready];
-
 }
 
 /* ---------------------------------- shell ------------------------------------ */
